@@ -1,73 +1,72 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "antd/dist/antd.css";
-import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
-import { Affix, Row, Col, Typography, Layout, Input, Button, Avatar, Card, List, Divider } from 'antd';
+import { Row, Col, Layout, Empty, Spin } from 'antd';
 import { getUser } from './api';
+import { Header, RepositoryList, UserProfile } from "./components";
+import { layout, content, repositoriesContainer, emptyContainer } from "./style";
 
-const { Header, Content } = Layout;
-const { Search } = Input;
-const { Meta } = Card;
+const { Content } = Layout;
 
 const App = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasSearch, setHasSearch] = useState(false);
   const [user, setUser] = useState(null);
-  const [repos, setRepos] = useState(null);
+  const [repositories, setRepositories] = useState(null);
   
-  const search = val => {
+  const search = (val: string) => {
+    setIsLoading(true);
+    setHasSearch(true);
     getUser(val)
       .then(response => {
-        console.log(response);
         setUser(response[0]);
-        setRepos(response[1]);
+        setRepositories(response[1]);
+        setIsLoading(false);
       });
   };
 
-  return (
-    <Layout style={{height:"auto"}}>
-      <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-        <Row>
-          <Col span={16}>
-            <Typography style={{ color: "white" }}>Github Finder</Typography>
+  const renderContent = () => {
+    if (hasSearch && user) {
+      return (
+        <>
+          <Col span={6}>
+            {
+              user && (
+                <UserProfile user={user} />
+              )
+            }
           </Col>
-          <Col span={8}>
-            <Search placeholder="enter github username here..." onSearch={search} />
-          </Col>          
-        </Row>
-      </Header>
-      <Content style={{ background: "white" }}>
+          <Col span={18} style={repositoriesContainer}>
+            <RepositoryList repositories={repositories} />
+          </Col>
+        </>        
+      )
+    }
+
+    return (
+      <Col span={24} style={emptyContainer}>
+        {
+          isLoading ? (
+              <Spin size="large" />
+            ) : (
+            <Empty
+              description={ hasSearch
+                ? "The search term you provided doesn't has results"
+                : "Please write a search term and hit enter"
+              }
+            />
+          )
+        }
+      </Col>
+    )
+  };
+
+  return (
+    <Layout style={layout}>
+      <Header handleSearch={search} />
+        <Content style={content}>
         <Row>
           {
-            user && repos && (
-              <>
-          <Col span={6}>
-            <Affix offsetTop={64}>
-              <Card title={user.login} extra={<a href={user.html_url} target="_blank">view profile</a>} style={{ height: "100%" }}>
-                <Avatar size={120} style={{ display: "block", margin: "0 auto 24px auto" }} src={user.avatar_url} />
-                <Meta
-                  title={user.login}
-                  description={user.bio}
-                />
-              </Card>  
-            </Affix>      
-          </Col>
-          <Col span={18} style={{ padding: "0 24px" }}>
-            <List
-              className="demo-loadmore-list"
-              itemLayout="horizontal"
-              dataSource={repos}
-              renderItem={item => (
-                <List.Item
-                  actions={[<a key="list-loadmore-edit" href={item.svn_url}>view</a>]}
-                >
-                  <List.Item.Meta
-                    title={<a href="https://ant.design">{item.name}</a>}
-                    description={item.description}
-                  />
-                </List.Item>
-              )}
-            />                  
-          </Col>
-              </>
-            )
+            renderContent()
           }
         </Row>
       </Content>
