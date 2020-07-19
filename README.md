@@ -1,5 +1,5 @@
 # Github List
-This project was created to allow users to find users from github with a simpler application that show the user profile and user's public repositories.
+This project was created to allow anyone to find github accounts with a simple application that shows the user profile and public repositories.
 
 ### To run
 1. Clone this repo
