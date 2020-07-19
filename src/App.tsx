@@ -28,14 +28,14 @@ const App = () => {
     if (hasSearch && user) {
       return (
         <>
-          <Col span={6}>
+          <Col xs={24} md={6}>
             {
               user && (
                 <UserProfile user={user} />
               )
             }
           </Col>
-          <Col span={18} style={repositoriesContainer}>
+          <Col xs={24} md={18} style={repositoriesContainer}>
             <RepositoryList repositories={repositories} />
           </Col>
         </>        

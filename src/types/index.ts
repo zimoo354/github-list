@@ -1,5 +1,6 @@
 interface RepositoryType {
   svn_url: string | null;
+  clone_url: string | null;
   name: string | null;
   description: string | null;
 };

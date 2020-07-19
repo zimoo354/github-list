@@ -9,10 +9,10 @@ const Header = ({ handleSearch }) => {
   return (
     <AntdHeader style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
       <Row>
-        <Col span={16}>
+        <Col xs={0} md={16}>
           <Typography style={{ color: "white" }}>Github Finder</Typography>
         </Col>
-        <Col span={8}>
+        <Col xs={24} md={8}>
           <Search placeholder="enter github username here..." onSearch={handleSearch} />
         </Col>          
       </Row>
