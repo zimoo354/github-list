@@ -2,6 +2,7 @@ import React from "react";
 import { List, Empty, Col, Typography } from "antd";
 import { RepositoryType } from "../../types";
 import { emptyContainer } from "../../style";
+import { observer } from 'mobx-react';
 
 const { Text } = Typography;
 
@@ -39,4 +40,4 @@ const RepositoryList = ({ repositories }: { repositories: Array<RepositoryType> 
   </>
 );
 
-export default RepositoryList;
+export default observer(RepositoryList);

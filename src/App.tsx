@@ -1,42 +1,40 @@
 import React, { useState } from "react";
+import { observer } from 'mobx-react';
 import "antd/dist/antd.css";
 import { Row, Col, Layout, Empty, Spin } from 'antd';
-import { getUser } from './api';
 import { Header, RepositoryList, UserProfile } from "./components";
 import { layout, content, repositoriesContainer, emptyContainer } from "./style";
+import ProfileStore from "./models/ProfileStore";
 
 const { Content } = Layout;
+
+const profileStore = ProfileStore.create();
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearch, setHasSearch] = useState(false);
-  const [user, setUser] = useState(null);
-  const [repositories, setRepositories] = useState(null);
   
   const search = (val: string) => {
     setIsLoading(true);
     setHasSearch(true);
-    getUser(val)
-      .then(response => {
-        setUser(response[0]);
-        setRepositories(response[1]);
-        setIsLoading(false);
-      });
+    profileStore.getProfile(val, () => {
+      setIsLoading(false);
+    });
   };
 
   const renderContent = () => {
-    if (hasSearch && user) {
+    if (hasSearch && profileStore.user) {
       return (
         <>
           <Col xs={24} md={6}>
             {
-              user && (
-                <UserProfile user={user} />
+              profileStore.user && (
+                <UserProfile user={profileStore.user} />
               )
             }
           </Col>
           <Col xs={24} md={18} style={repositoriesContainer}>
-            <RepositoryList repositories={repositories} />
+            <RepositoryList repositories={profileStore.repositories} />
           </Col>
         </>        
       )
@@ -74,4 +72,4 @@ const App = () => {
   )
 };
 
-export default App;
+export default observer(App);

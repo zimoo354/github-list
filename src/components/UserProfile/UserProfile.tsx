@@ -1,12 +1,11 @@
 import React from "react";
-import { Affix, Card, Avatar, Typography } from "antd";
+import { observer } from 'mobx-react';
+import { Card, Avatar, Typography } from "antd";
 import { PushpinOutlined, BankOutlined, CloudOutlined } from "@ant-design/icons";
 import { UserType } from "../../types";
 import { card, fullName, userLogin, icon } from "./styles";
 
-const { Title, Paragraph, Text } = Typography;
-
-const { Meta } = Card;
+const { Title, Paragraph } = Typography;
 
 const icons = {
   location: PushpinOutlined,
@@ -44,4 +43,4 @@ const UserProfile = ({ user }: { user: UserType }) => (
     </Card>
 );
 
-export default UserProfile;
+export default observer(UserProfile);
