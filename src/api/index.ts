@@ -1,16 +1,21 @@
 const baseUrl = "https://api.github.com";
 
-export const getUser = async (username: string) => {
-  const urls = [
-    `${baseUrl}/users/${username}`,
-    `${baseUrl}/users/${username}/repos`,
-  ];
-  const responses = await Promise.all(urls.map(url => fetch(url)));
-    return await Promise.all(responses.map(res => {
-      if (res.status != 200)
-        return null;
+const Api = {
+  getUser: async (username: string) => {
+    const urls = [
+      `${baseUrl}/users/${username}`,
+      `${baseUrl}/users/${username}/repos`,
+    ];
+    const responses = Promise.all(urls.map(u=>fetch(u))).then(responses =>
+      Promise.all(responses.map(res => res.json()))
+    ).then(jsons => {
+      return {
+        user: jsons[0],
+        repositories: jsons[1],
+      };
+    });
+    return responses;
+  },
+};
 
-      return res.json();
-    })
-  );  
-}
+export default Api;
